@@ -1,0 +1,43 @@
+services:
+  belajar-odoo:
+    image: odoo:17.0@sha256:4959237918da385a5befe007fc95177bc2244c048ebc55097b7aa71c703e70ba
+    container_name: belajar-odoo
+    hostname: belajar-odoo
+    depends_on:
+      - belajar-postgres
+    environment:
+      HOST: belajar-postgres
+    ports:
+      - "8069:8069"
+    networks:
+      - belajar-network
+    volumes:
+      - belajar-odoo-data:/var/lib/odoo
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./addons-customize:/mnt/extra-addons
+
+  belajar-postgres:
+    image: postgres:16@sha256:71e27bf60b70bded003791b5573f8b808365613f341df20ffcf0c1ed7bc13ddf
+    container_name: belajar-postgres
+    hostname: belajar-postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    ports:
+      - "5438:5432"
+    networks:
+      - belajar-network
+    volumes:
+      - belajar-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  belajar-odoo-data:
+    name: "belajar-odoo-data"
+  belajar-postgres-data:
+    name: "belajar-postgres-data"
+
+networks:
+  belajar-network:
+    name: belajar-network
+    driver: bridge
