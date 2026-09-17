@@ -1,10 +1,10 @@
 # Setup Project Odoo Minimal
 
-Project ini berisi konfigurasi minimal untuk menjalankan Odoo 17 dan PostgreSQL 16 dengan Docker. Setup ini cocok untuk belajar Odoo, membuat custom module, dan menjaga hasil install tetap konsisten karena image Docker sudah dipin dengan digest.
+Project ini berisi konfigurasi minimal untuk menjalankan Odoo 19 dan PostgreSQL 16 dengan Docker. Setup ini cocok untuk belajar Odoo, membuat custom module, dan menjaga hasil install tetap konsisten.
 
 ## Isi Project
 
-- `docker-compose.yaml`: menjalankan service `belajar-odoo` dan `belajar-postgres`.
+- `docker-compose.yaml`: menjalankan service `demo-odoo` dan `demo-postgres`.
 - `odoo.conf`: konfigurasi minimal Odoo.
 - `addons-customize/`: folder untuk custom module Odoo yang akan dimount ke container.
 
@@ -43,22 +43,22 @@ addons-customize/
 
 Bagian pentingnya:
 
-- `belajar-odoo`: service Odoo 17.
-- `belajar-postgres`: service PostgreSQL 16.
-- `belajar-network`: network bridge agar Odoo dan PostgreSQL bisa saling terhubung.
-- `belajar-odoo-data`: volume untuk menyimpan data Odoo.
-- `belajar-postgres-data`: volume untuk menyimpan data PostgreSQL.
+- `demo-odoo`: service Odoo 19.
+- `demo-postgres`: service PostgreSQL 16.
+- `demo-network`: network bridge agar Odoo dan PostgreSQL bisa saling terhubung.
+- `demo-odoo-data`: volume untuk menyimpan data Odoo.
+- `demo-postgres-data`: volume untuk menyimpan data PostgreSQL.
 - `./odoo.conf:/etc/odoo/odoo.conf:ro`: mount config Odoo dalam mode read-only.
 - `./addons-customize:/mnt/extra-addons`: mount folder custom addons ke container Odoo.
-- `8069:8069`: Odoo bisa dibuka lewat `http://localhost:8069`.
-- `5438:5432`: PostgreSQL bisa diakses dari host lewat `localhost:5438`.
+- `80:8069`: Odoo bisa dibuka lewat `http://localhost` atau langsung dari IP address host.
+- `5432:5432`: PostgreSQL bisa diakses dari host lewat `localhost:5432`.
 
 Image Docker yang dipakai:
 
-- `odoo:17.0`
-- `postgres:16`
+- `odoo:19.0`
+- `postgres:16-bookworm`
 
-Keduanya dipin dengan digest di `docker-compose.yaml` supaya hasil install lebih konsisten.
+Keduanya menggunakan image Debian-based.
 
 ### `odoo.conf`
 
@@ -94,8 +94,8 @@ docker compose up -d
 
 Setelah container berjalan:
 
-- buka Odoo: `http://localhost:8069`
-- akses PostgreSQL dari database client: `localhost:5438`
+- buka Odoo: `http://localhost`
+- akses PostgreSQL dari database client: `localhost:5432`
 
 ## Command Docker Minimal
 
@@ -117,8 +117,8 @@ docker compose logs -f --tail 200
 Lihat logs service tertentu:
 
 ```bash
-docker compose logs -f --tail 200 belajar-odoo
-docker compose logs -f --tail 200 belajar-postgres
+docker compose logs -f --tail 200 demo-odoo
+docker compose logs -f --tail 200 demo-postgres
 ```
 
 ## Cara Pakai `addons-customize`
@@ -128,7 +128,7 @@ Taruh module custom kamu di folder `addons-customize/`. Setelah itu restart Odoo
 Contoh alur singkat:
 
 ```bash
-docker compose restart belajar-odoo
+docker compose restart demo-odoo
 ```
 
 Kalau module baru belum muncul di Apps, masuk ke Odoo lalu update Apps List.

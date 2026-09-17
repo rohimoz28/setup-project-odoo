@@ -1,43 +1,46 @@
 services:
-  belajar-odoo:
-    image: odoo:17.0@sha256:4959237918da385a5befe007fc95177bc2244c048ebc55097b7aa71c703e70ba
-    container_name: belajar-odoo
-    hostname: belajar-odoo
+  demo-odoo:
+    image: odoo:19.0
+    container_name: demo-odoo
+    hostname: demo-odoo
     depends_on:
-      - belajar-postgres
+      - demo-postgres
     environment:
-      HOST: belajar-postgres
+      HOST: demo-postgres
+      PORT: 5432
+      USER: odoo
+      PASSWORD: odoo
     ports:
-      - "8069:8069"
+      - "80:8069"
     networks:
-      - belajar-network
+      - demo-network
     volumes:
-      - belajar-odoo-data:/var/lib/odoo
+      - demo-odoo-data:/var/lib/odoo
       - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - ./addons-customize:/mnt/extra-addons
 
-  belajar-postgres:
-    image: postgres:16@sha256:71e27bf60b70bded003791b5573f8b808365613f341df20ffcf0c1ed7bc13ddf
-    container_name: belajar-postgres
-    hostname: belajar-postgres
+  demo-postgres:
+    image: postgres:16-bookworm
+    container_name: demo-postgres
+    hostname: demo-postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: odoo
     ports:
-      - "5438:5432"
+      - "5432:5432"
     networks:
-      - belajar-network
+      - demo-network
     volumes:
-      - belajar-postgres-data:/var/lib/postgresql/data
+      - demo-postgres-data:/var/lib/postgresql/data
 
 volumes:
-  belajar-odoo-data:
-    name: "belajar-odoo-data"
-  belajar-postgres-data:
-    name: "belajar-postgres-data"
+  demo-odoo-data:
+    name: "demo-odoo-data"
+  demo-postgres-data:
+    name: "demo-postgres-data"
 
 networks:
-  belajar-network:
-    name: belajar-network
+  demo-network:
+    name: demo-network
     driver: bridge
