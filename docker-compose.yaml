@@ -18,6 +18,7 @@ services:
       - demo-odoo-data:/var/lib/odoo
       - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - ./addons-customize:/mnt/extra-addons
+      - ./addons-thirdparty:/mnt/thirdparty-addons
 
   demo-postgres:
     image: postgres:16-bookworm

@@ -7,6 +7,7 @@ Project ini berisi konfigurasi minimal untuk menjalankan Odoo 19 dan PostgreSQL 
 - `docker-compose.yaml`: menjalankan service `demo-odoo` dan `demo-postgres`.
 - `odoo.conf`: konfigurasi minimal Odoo.
 - `addons-customize/`: folder untuk custom module Odoo yang akan dimount ke container.
+- `addons-thirdparty/`: folder untuk third-party module Odoo yang akan dimount ke container.
 
 ## File Yang Perlu Dipakai
 
@@ -15,8 +16,10 @@ Kalau kamu copy-paste project ini ke mesin lain, pastikan file dan folder beriku
 - `docker-compose.yaml`
 - `odoo.conf`
 - `addons-customize/`
+- `addons-thirdparty/`
 
 Folder `addons-customize/` boleh kosong dulu. Nanti isi dengan module Odoo buatanmu.
+Folder `addons-thirdparty/` dipakai untuk module third-party.
 
 ## Cara Install
 
@@ -35,6 +38,7 @@ Kalau tidak pakai `git clone`, buat file dan folder ini di root project:
 docker-compose.yaml
 odoo.conf
 addons-customize/
+addons-thirdparty/
 ```
 
 ## Konfigurasi Minimal
@@ -50,6 +54,7 @@ Bagian pentingnya:
 - `demo-postgres-data`: volume untuk menyimpan data PostgreSQL.
 - `./odoo.conf:/etc/odoo/odoo.conf:ro`: mount config Odoo dalam mode read-only.
 - `./addons-customize:/mnt/extra-addons`: mount folder custom addons ke container Odoo.
+- `./addons-thirdparty:/mnt/thirdparty-addons`: mount folder third-party addons ke container Odoo.
 - `80:8069`: Odoo bisa dibuka lewat `http://localhost` atau langsung dari IP address host.
 - `5432:5432`: PostgreSQL bisa diakses dari host lewat `localhost:5432`.
 
@@ -67,14 +72,14 @@ Isi minimalnya seperti ini:
 ```ini
 [options]
 admin_passwd = admindemo
-addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons,/mnt/thirdparty-addons
 data_dir = /var/lib/odoo
 ```
 
 Fungsi tiap baris:
 
 - `admin_passwd`: master password untuk Database Manager Odoo.
-- `addons_path`: lokasi core addons dan custom addons.
+- `addons_path`: lokasi core addons, custom addons, dan third-party addons.
 - `data_dir`: lokasi data Odoo di dalam container.
 
 Credential PostgreSQL tidak disimpan di `odoo.conf`. Credential database diatur lewat `docker-compose.yaml`.
@@ -124,6 +129,14 @@ docker compose logs -f --tail 200 demo-postgres
 ## Cara Pakai `addons-customize`
 
 Taruh module custom kamu di folder `addons-customize/`. Setelah itu restart Odoo supaya module terbaca lagi.
+
+## Cara Pakai `addons-thirdparty`
+
+Taruh module third-party di folder `addons-thirdparty/`. Path yang sudah dibaca Odoo:
+
+- `/mnt/thirdparty-addons`
+
+Kalau menambah folder third-party baru dengan mount berbeda, tambahkan path folder tersebut ke `addons_path` di `odoo.conf`.
 
 Contoh alur singkat:
 
