@@ -176,7 +176,8 @@ class ResPartner(models.Model):
                     strbegin = "<TD>"
                     strend = "</TD>"
                     date = aml['date_maturity'] or aml['date']
-                    date = datetime.strptime(date, "%m/%d/%Y").date()
+                    # date = datetime.strptime(date, "%m/%d/%Y").date()
+                    date = fields.Date.to_date(date)
                     if date <= current_date and aml['balance'] > 0:
                         strbegin = "<TD><B>"
                         strend = "</B></TD>"
