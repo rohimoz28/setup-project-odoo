@@ -22,6 +22,7 @@ class ReportFollowup(models.AbstractModel):
             'ids_to_objects': self._ids_to_objects,
             'getLines': self._lines_get,
             'get_text': self._get_text,
+            'format_date': lambda date: format_date(self.env, date) if date else '',
             'data': data and data['form'] or {}}
 
     def _ids_to_objects(self, ids):
@@ -54,9 +55,8 @@ class ReportFollowup(models.AbstractModel):
             line_data = {
                 'name': line.move_id.name,
                 'ref': line.ref,
-                'date': format_date(self.env, line.date),
-                # 'date_maturity': format_date(self.env, line.date_maturity),
-                'date_maturity': format_date(self.env, line.date_maturity),
+                'date': line.date,
+                'date_maturity': line.date_maturity,
                 'balance': balance,
                 'currency_id': currency,
             }

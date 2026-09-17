@@ -1,8 +1,8 @@
 from functools import reduce
 from lxml import etree
 from odoo import api, fields, models, _
-from datetime import datetime
 from odoo.exceptions import ValidationError
+from odoo.tools import format_date
 from odoo.tools.misc import formatLang
 
 
@@ -176,16 +176,16 @@ class ResPartner(models.Model):
                     strbegin = "<TD>"
                     strend = "</TD>"
                     date = aml['date_maturity'] or aml['date']
-                    # date = datetime.strptime(date, "%m/%d/%Y").date()
-                    date = fields.Date.to_date(date)
                     if date <= current_date and aml['balance'] > 0:
                         strbegin = "<TD><B>"
                         strend = "</B></TD>"
-                    followup_table += "<TR>" + strbegin + str(aml['date']) + \
+                    invoice_date = format_date(self.env, aml['date'])
+                    due_date = format_date(self.env, date)
+                    followup_table += "<TR>" + strbegin + invoice_date + \
                                       strend + strbegin + aml['name'] + \
                                       strend + strbegin + \
                                       (aml['ref'] or '') + strend + \
-                                      strbegin + str(date) + strend + \
+                                      strbegin + due_date + strend + \
                                       strbegin + str(aml['balance']) + \
                                       strend + "</TR>"
 
